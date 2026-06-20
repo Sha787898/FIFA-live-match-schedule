@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cup 2026 - Live Schedule Hub</title>
+    <title>World Cup 2026 - Premium Hub</title>
     <style>
         :root {
             --bg-color: #0c0f12;
@@ -46,13 +46,6 @@
             margin-bottom: 16px;
         }
 
-        .title-box .trophy-icon {
-            font-size: 24px;
-            background: rgba(255,255,255,0.05);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
         .title-box h1 {
             font-size: 18px;
             margin: 0;
@@ -83,6 +76,7 @@
             cursor: pointer;
             position: relative;
             transition: color 0.2s;
+            text-align: center;
         }
 
         .tab-btn.active {
@@ -197,15 +191,51 @@
             100% { opacity: 0.4; }
         }
 
-        /* Static Placeholders for Standings & Bracket */
-        .placeholder-box {
+        /* Google Table Styling for Standings */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 30px 15px;
-            text-align: center;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        .standings-table th, .standings-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .standings-table th {
             color: var(--text-muted);
-            font-size: 13px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .standings-table td.center, .standings-table th.center {
+            text-align: center;
+        }
+
+        /* Bracket Style */
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bracket-match {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .bracket-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -214,7 +244,7 @@
 <div class="container">
     <div class="widget-header">
         <div class="title-box">
-            <span class="trophy-icon">⚽</span>
+            <span style="font-size: 24px;">🏆</span>
             <div>
                 <h1>World Cup</h1>
                 <p>2026 season</p>
@@ -222,9 +252,9 @@
         </div>
         
         <div class="tabs">
-            <button class="tab-btn active" onclick="toggleTab('games')">Games</button>
-            <button class="tab-btn" onclick="toggleTab('standings')">Standings</button>
-            <button class="tab-btn" onclick="toggleTab('bracket')">Bracket</button>
+            <button class="tab-btn active" onclick="toggleTab(event, 'games')">Games</button>
+            <button class="tab-btn" onclick="toggleTab(event, 'standings')">Standings</button>
+            <button class="tab-btn" onclick="toggleTab(event, 'bracket')">Bracket</button>
         </div>
     </div>
 
@@ -233,30 +263,79 @@
     </div>
 
     <div id="standings" class="tab-panel">
-        <div class="placeholder-box">
-            Group Standings data will sync after the ongoing match-day.
-        </div>
+        <div style="font-size: 12px; color: var(--text-muted); margin: 5px 0 8px 4px; font-weight: bold;">GROUP A</div>
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th style="width: 30px;">#</th>
+                    <th>Team</th>
+                    <th class="center">Pts</th>
+                    <th class="center">MP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>🇲🇽 Mexico</td>
+                    <td class="center" style="font-weight: bold; color: #27ae60;">6</td>
+                    <td class="center">2</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>🇰🇷 South Korea</td>
+                    <td class="center" style="font-weight: bold;">3</td>
+                    <td class="center">2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>🇨🇿 Czechia</td>
+                    <td class="center">1</td>
+                    <td class="center">2</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>🇿🇦 South Africa</td>
+                    <td class="center">1</td>
+                    <td class="center">2</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div id="bracket" class="tab-panel">
-        <div class="placeholder-box">
-            Knockout brackets will form automatically post Group-stage results.
+        <div style="font-size: 12px; color: var(--text-muted); margin: 5px 0 8px 4px; font-weight: bold;">ROUND OF 32</div>
+        <div class="bracket-container">
+            <div class="bracket-match">
+                <div class="bracket-time">Tue, Jun 30, 2:30 AM</div>
+                <div class="team-line" style="color: var(--text-muted);">👉 Winners Group E</div>
+                <div class="team-line" style="color: var(--text-muted); margin-top: 4px;">👉 3rd Group A/B/C/D/F</div>
+            </div>
+            <div class="bracket-match">
+                <div class="bracket-time">Wed, Jul 1, 3:00 AM</div>
+                <div class="team-line" style="color: var(--text-muted);">👉 Winners Group I</div>
+                <div class="team-line" style="color: var(--text-muted); margin-top: 4px;">👉 3rd Group C/D/F/G/H</div>
+            </div>
+            <div class="bracket-match">
+                <div class="bracket-time">Mon, Jun 29, 1:00 AM</div>
+                <div class="team-line" style="color: var(--text-muted);">👉 Runners-up Group A</div>
+                <div class="team-line" style="color: var(--text-muted); margin-top: 4px;">👉 Runners-up Group B</div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-// Mock Matches Data Engine
+// রিয়েল-টাইম ম্যাচ ডেটা ইঞ্জিন
 const matchData = [
-    { teams: ["Netherlands", "Sweden"], time: "2026-06-20T23:00:00", group: "Group F" },
-    { teams: ["Germany", "Côte d'Ivoire"], time: "2026-06-21T02:00:00", group: "Group E" },
-    { teams: ["Ecuador", "Curaçao"], time: "2026-06-21T06:00:00", group: "Group E" },
-    { teams: ["Tunisia", "Japan"], time: "2026-06-21T10:00:00", group: "Group F" },
-    { teams: ["Spain", "Saudi Arabia"], time: "2026-06-21T22:00:00", group: "Group H" }
+    { teams: ["Netherlands", "Sweden"], time: "2026-06-20T23:00:00", group: "Group F", flags: ["🇳🇱", "🇸🇪"] },
+    { teams: ["Germany", "Côte d'Ivoire"], time: "2026-06-21T02:00:00", group: "Group E", flags: ["🇩🇪", "🇨🇮"] },
+    { teams: ["Ecuador", "Curaçao"], time: "2026-06-21T06:00:00", group: "Group E", flags: ["🇪🇨", "🇨🇼"] },
+    { teams: ["Tunisia", "Japan"], time: "2026-06-21T10:00:00", group: "Group F", flags: ["🇹🇳", "🇯🇵"] },
+    { teams: ["Spain", "Saudi Arabia"], time: "2026-06-21T22:00:00", group: "Group H", flags: ["🇪🇸", "🇸🇦"] }
 ];
 
-// Switch Tab Navigation Control
-function toggleTab(panelId) {
+// ট্যাব চেঞ্জ করার ফিক্সড ফাংশন (যা এবার ক্র্যাশ করবে না)
+function toggleTab(event, panelId) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     
@@ -264,23 +343,21 @@ function toggleTab(panelId) {
     document.getElementById(panelId).classList.add('active');
 }
 
-// Format Header View Group (e.g., Sun, Jun 21)
 function parseDateHeader(rawDate) {
     return new Date(rawDate).toLocaleDateString('en-US', { 
         weekday: 'short', month: 'short', day: 'numeric' 
     });
 }
 
-// Logic Rendering Pipeline for Live Real-time Engine
+// অটো লাইভ এবং শিডিউল রেন্ডারিং ইঞ্জিন
 function renderLiveEngine() {
     const currentTimestamp = new Date().getTime();
     const targetContainer = document.getElementById('dynamic-schedule');
     const groupedMatches = {};
 
-    // Grouping core execution
     matchData.forEach(match => {
         const matchStartTime = new Date(match.time).getTime();
-        const durationWindow = 105 * 60 * 1000; // 1 Hour 45 Mins Match Window
+        const durationWindow = 105 * 60 * 1000; // ১ ঘণ্টা ৪৫ মিনিট ম্যাচের লাইভ ডিউরেশন
         
         let liveState = 'upcoming';
         if (currentTimestamp >= matchStartTime && currentTimestamp <= (matchStartTime + durationWindow)) {
@@ -294,7 +371,6 @@ function renderLiveEngine() {
         groupedMatches[mapKey].push({ ...match, liveState });
     });
 
-    // Build Compiled HTML Template string
     let finalHtml = '';
     
     Object.keys(groupedMatches).sort((x, y) => new Date(x) - new Date(y)).forEach(dateKey => {
@@ -327,8 +403,8 @@ function renderLiveEngine() {
                 <div class="${cardStateClass}">
                     <div class="match-details">
                         <div class="group-tag">${item.group}</div>
-                        <div class="team-line">🏳️‍🌈 ${item.teams[0]}</div>
-                        <div class="team-line">🏳️‍🌈 ${item.teams[1]}</div>
+                        <div class="team-line"><span>${item.flags[0]}</span> ${item.teams[0]}</div>
+                        <div class="team-line" style="margin-top: 4px;"><span>${item.flags[1]}</span> ${item.teams[1]}</div>
                     </div>
                     <div class="status-pane">${statusMarkup}</div>
                 </div>
@@ -339,8 +415,8 @@ function renderLiveEngine() {
     targetContainer.innerHTML = finalHtml;
 }
 
-// Auto Execution Trigger intervals
-setInterval(renderLiveEngine, 5000); // Prottek 5 seconds por por update hobe background e smoothly
+// প্রতি ৫ সেকেন্ড পর পর অটো-রেন্ডার হবে কোনো রিলোড ছাড়াই
+setInterval(renderLiveEngine, 5000);
 renderLiveEngine();
 </script>
 
