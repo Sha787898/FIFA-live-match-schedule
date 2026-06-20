@@ -3,75 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live FIFA Schedule</title>
+    <title>FIFA World Cup 2026 - Live Hub</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #000; color: #fff; margin: 0; padding: 10px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .banner { border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); display: none; }
-        .live { background: linear-gradient(135deg, #9f1239, #4c0519); border-color: #f43f5e; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 10px #f43f5e; } 50% { box-shadow: 0 0 25px #f43f5e; } 100% { box-shadow: 0 0 10px #f43f5e; } }
-        .match-list { display: grid; gap: 10px; margin-top: 20px; }
-        .match-item { background: #1a1a1a; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #333; }
+        :root {
+            --bg-color: #0c0f12;
+            --card-bg: #161b22;
+            --primary: #2f80ed;
+            --live-color: #ff334b;
+            --text-main: #ffffff;
+            --text-muted: #8b949e;
+            --border: #30363d;
+        }
+
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: var(--bg-color); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { 
+            width: 100%;
+            max-width: 600px; 
+            margin-top: 10px;
+        }
+
+        /* Top Header & Navigation Tabs */
+        .header-widget {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 15px 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .title-section img {
+            width: 30px;
+            height: auto;
+        }
+
+        .title-section h1 {
+            font-size: 20px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .title-section p {
+            margin: 2px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Tab Contents */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Date Header Group */
+        .date-group-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 20px 0 10px 5px;
+        }
+
+        /* Match Card Styles */
+        .match-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .match-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .group-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .teams-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .team-name {
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Status & Time Section */
+        .time-status-box {
+            border-left: 1px solid var(--border);
+            padding-left: 20px;
+            min-width: 90px;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .match-time {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .match-status-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Live Match Styling */
+        .match-card.is-live {
+            border-color: var(--live-color);
+            background: linear-gradient(145deg, #161b22, #251216);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-card.is-live::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--live-color);
+        }
+
+        .is-live .match-time {
+            color: var(--live-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--live-color);
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* Empty/Placeholder States */
+        .placeholder-text {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 4px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="status-banner" class="banner">
-        <h2 id="match-title">Loading...</h2>
-        <div id="match-timer" style="font-weight: bold; margin-top: 5px;"></div>
+    <div class="header-widget">
+        <div class="title-section">
+            <span style="font-size: 28px;">🏆</span>
+            <div>
+                <h1>World Cup</h1>
+                <p>2026 season</p>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('games')">Games</button>
+            <button class="tab-btn" onclick="switchTab('standings')">Standings</button>
+            <button class="tab-btn" onclick="switchTab('bracket')">Bracket</button>
+        </div>
     </div>
-    <div id="schedule-container" class="match-list"></div>
+
+    <div id="games-tab" class="tab-content active">
+        <div id="schedule-container"></div>
+    </div>
+
+    <div id="standings-tab" class="tab-content">
+        <div class="match-card">
+            <div class="placeholder-text">Standings feature will auto-load group stages here.</div>
+        </div>
+    </div>
+
+    <div id="bracket-tab" class="tab-content">
+        <div class="match-card">
+            <div class="placeholder-text">Knockout Brackets (Round of 32) opens post group stages.</div>
+        </div>
+    </div>
 </div>
 
 <script>
+// আপনার ম্যাচের ডেটাসেট (এখানে আপনি আপনার মতো টিম ও সময় এডিট করতে পারবেন)
 const matches = [
-    { teams: "Portugal vs DR Congo", time: "2026-06-17T23:00:00", group: "Group K" },
-    { teams: "England vs Croatia", time: "2026-06-18T02:00:00", group: "Group L" },
-    { teams: "Ghana vs Panama", time: "2026-06-18T05:00:00", group: "Group L" },
-    { teams: "Uzbekistan vs Colombia", time: "2026-06-18T08:00:00", group: "Group K" },
-    { teams: "Czechia vs South Africa", time: "2026-06-18T22:00:00", group: "Group A" },
-    { teams: "Switzerland vs Bosnia & Herz.", time: "2026-06-19T01:00:00", group: "Group B" },
-    { teams: "Canada vs Qatar", time: "2026-06-19T04:00:00", group: "Group B" },
-    { teams: "Mexico vs South Korea", time: "2026-06-19T07:00:00", group: "Group A" },
-    { teams: "USA vs Australia", time: "2026-06-20T01:00:00", group: "Group D" },
-    { teams: "Scotland vs Morocco", time: "2026-06-20T04:00:00", group: "Group C" },
-    { teams: "Brazil vs Haiti", time: "2026-06-20T06:30:00", group: "Group C" },
-    { teams: "Italy vs Nigeria", time: "2026-06-21T02:00:00", group: "Group E" },
-    { teams: "Japan vs Serbia", time: "2026-06-22T03:00:00", group: "Group F" },
-    { teams: "France vs Chile", time: "2026-06-23T01:00:00", group: "Group G" },
-    { teams: "Spain vs Egypt", time: "2026-06-24T05:00:00", group: "Group H" }
+    { teams: ["Portugal", "DR Congo"], time: "2026-06-17T23:00:00", group: "Group K" },
+    { teams: ["England", "Croatia"], time: "2026-06-18T02:00:00", group: "Group L" },
+    { teams: ["Germany", "Côte d'Ivoire"], time: "2026-06-21T02:00:00", group: "Group E" },
+    { teams: ["Ecuador", "Curaçao"], time: "2026-06-21T06:00:00", group: "Group E" },
+    { teams: ["Tunisia", "Japan"], time: "2026-06-21T10:00:00", group: "Group F" },
+    { teams: ["Spain", "Saudi Arabia"], time: "2026-06-21T22:00:00", group: "Group H" },
+    { teams: ["Japan", "Serbia"], time: "2026-06-22T03:00:00", group: "Group F" },
+    { teams: ["France", "Chile"], time: "2026-06-23T01:00:00", group: "Group G" }
 ];
 
-function update() {
-    const now = new Date().getTime();
-    const banner = document.getElementById('status-banner');
-    const container = document.getElementById('schedule-container');
+// ট্যাব পরিবর্তন করার ফাংশন
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    // লাইভ চেক (ম্যাচ চলাকালীন সময় ১ ঘণ্টা ৪৫ মিনিট ধরে)
-    const liveMatch = matches.find(m => now >= new Date(m.time).getTime() && now <= new Date(m.time).getTime() + 6300000);
-    
-    if (liveMatch) {
-        banner.style.display = 'block';
-        banner.className = 'banner live';
-        document.getElementById('match-title').innerText = liveMatch.teams + " (LIVE)";
-        document.getElementById('match-timer').innerText = "Match is ongoing...";
-    } else {
-        banner.style.display = 'none';
-    }
-
-    // আপকামিং শিডিউল ও অটো-রিমুভ (ম্যাচ শেষ হলে লিস্ট থেকে মুছে যাবে)
-    const upcoming = matches.filter(m => new Date(m.time).getTime() > now);
-    container.innerHTML = upcoming.map(m => `
-        <div class="match-item">
-            <div><strong>${m.teams}</strong><br><small>${m.group}</small></div>
-            <div>${new Date(m.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br><small>${new Date(m.time).toLocaleDateString()}</small></div>
-        </div>
-    `).join('');
+    event.currentTarget.classList.add('active');
+    document.getElementById(`${tabName}-tab`).classList.add('active');
 }
 
-setInterval(update, 1000);
-update();
+// তারিখ সুন্দরভাবে ফরম্যাট করার ফাংশন (যেমন: Sun, Jun 21)
+function formatDateHeader(dateStr) {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    return new Date(dateStr).toLocaleDateString('en-US', options);
+}
+
+function renderSchedule() {
+    const now = new Date().getTime();
+    const container = document.getElementById('schedule-container');
+    
+    // ম্যাচগুলোকে তারিখ অনুযায়ী সাজানোর জন্য অবজেক্ট তৈরি
+    const groupedMatches = {};
+
+    matches.forEach(match => {
+        const matchTime = new Date(match.time).getTime();
+        const matchDuration = 105 * 60 * 1000; // ১ ঘণ্টা ৪৫ মিনিট (ম্যাচের স্থায়িত্ব)
+        
+        let status = 'upcoming';
+        if (now >= matchTime && now <= matchTime + matchDuration) {
+            status = 'live';
+        } else if (now > matchTime + matchDuration) {
+            status = 'finished';
+        }
+
+        // তারিখের কী (Key) তৈরি
+        const dateKey = new Date(match.time).toDateString();
+        if (!groupedMatches[dateKey]) {
+            groupedMatches[dateKey] = [];
+        }
+
+        groupedMatches[dateKey].push({ ...match, status, matchTime });
+    });
+
+    // HTML জেনারেট করা
+    let htmlOutput = '';
+    
+    // তারিখ অনুযায়ী শর্ট করে লুপ চালানো
+    Object.keys(groupedMatches).sort((a,b) => new Date(a) - new Date(b)).forEach(dateKey => {
+        htmlOutput += `<div class="date-group-header">${formatDateHeader(dateKey)}</div>`;
+        
+        groupedMatches[dateKey].forEach(match => {
+            const timeString = new Date(match.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            let statusHTML = '';
+            let cardClass = 'match-card';
+
+            if (match.status === 'live') {
+                cardClass += ' is-live';
+                statusHTML = `
+                    <div class="match-time"><span class="live-dot"></span>LIVE</div>
+                    <div class="match-status-label" style="color: var(--live-color)">Ongoing</div>
+                `;
+            } else if (match.status === 'finished') {
+                statusHTML = `
+                    <div class="match-time" style="color: var(--text-muted);">FT</div>
+                    <div class="match-status-label">Finished</div>
+                `;
+            } else {
+                statusHTML = `
+                    <div class="match-time">${timeString}</div>
+                    <div class="match-status-label">Upcoming</div>
+                `;
+            }
+
+            htmlOutput += `
+                <div class="${cardClass}">
+                    <div class="match-info">
+                        <div class="group-label">${match.group}</div>
+                        <div class="teams-row">
+                            <div class="team-name">⚽ ${match.teams[0]}</div>
+                            <div class="team-name">⚽ ${match.teams[1]}</div>
+                        </div>
+                    </div>
+                    <div class="time-status-box">
+                        ${statusHTML}
+                    </div>
+                </div>
+            `;
+        });
+    });
+
+    container.innerHTML = htmlOutput;
+}
+
+// প্রতি ৩০ সেকেন্ড পর পর লাইভ স্ট্যাটাস আপডেট হবে স্বয়ংক্রিয়ভাবে
+setInterval(renderSchedule, 30000);
+renderSchedule();
 </script>
 
 </body>
